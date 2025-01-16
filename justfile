@@ -36,8 +36,18 @@ sparc_clean:
 sparc_env:
   just arch_env {{ sparc_glib_local }} sparc "sparc64-linux-"
 
+s390_name := "s390x-z13--glibc--stable-2024.05-1"
+s390_glib_url := bootlin_url / "s390x-z13/tarballs" / s390_name + ".tar.xz"
+s390_glib_local := local_toolchain_path / s390_name
 
-all: sparc x86_32
+s390:
+  just arch {{s390_glib_url}} {{s390_glib_local}}
+s390_clean:
+  just arch_clean {{s390_glib_local}}
+s390_env:
+  just arch_env {{ s390_glib_local }} s390 "s390x-linux-gnu-"
+
+all: sparc x86_32 s390
 clean: sparc_clean x86_32_clean
 
 
