@@ -1,5 +1,5 @@
 bootlin_url := "https://toolchains.bootlin.com/downloads/releases/toolchains"
-local_toolchain_path := "~/src/toolchains"
+local_toolchain_path := `pwd`
 
 download url:
   wget --no-clobber -P {{local_toolchain_path}} {{url}}
