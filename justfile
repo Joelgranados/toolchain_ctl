@@ -45,7 +45,7 @@ s390:
 s390_clean:
   just arch_clean {{s390_glib_local}}
 s390_env:
-  just arch_env {{ s390_glib_local }} s390 "s390x-linux-gnu-"
+  just arch_env {{ s390_glib_local }} s390 "s390x-linux-"
 
 all: sparc x86_32 s390
 clean: sparc_clean x86_32_clean
