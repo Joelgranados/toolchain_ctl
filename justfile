@@ -1,5 +1,12 @@
+set dotenv-load
+set dotenv-required
+
 bootlin_url := "https://toolchains.bootlin.com/downloads/releases/toolchains"
 local_toolchain_path := `pwd`
+lib := "glibc"
+release := "stable"
+date := "2024.05-1"
+postfix := "--" + lib + "--" + release + "-" + date
 
 _download url:
   wget --no-clobber -P {{local_toolchain_path}} {{url}}
@@ -16,39 +23,38 @@ _arch_clean dir:
 _arch_env tool_path arch cross_compile:
   PATH="{{ tool_path }}/bin:$PATH" ARCH={{arch}} CROSS_COMPILE={{cross_compile}} zsh
 
-x86_32_name := "x86-i686--glibc--stable-2024.05-1"
-x86_32_glib_url := bootlin_url / "x86-i686/tarballs" / x86_32_name + ".tar.xz"
-x86_32_glib_local := local_toolchain_path / x86_32_name
+# Download architecture [arch]
+arch_wget arch:
+  just _arch_get \
+    {{bootlin_url}}/${{arch}}_name/tarballs/${{arch}}_name{{postfix}}.tar.xz \
+    {{local_toolchain_path}}/${{arch}}_name{{postfix}}
 
-x86_32:
-  just _arch_get {{x86_32_glib_url}} {{x86_32_glib_local}}
-x86_32_clean:
-  just _arch_clean {{x86_32_glib_local}}
-x86_32_env:
-  just _arch_env {{ x86_32_glib_local }} i386 "i686-linux-"
+# Remove architecture [arch]
+arch_clean arch:
+  just _arch_clean \
+    {{local_toolchain_path}}/${{arch}}_name{{postfix}}
 
-sparc_name := "sparc64--glibc--stable-2024.05-1"
-sparc_glib_url := bootlin_url / "sparc64/tarballs" / sparc_name + ".tar.xz"
-sparc_glib_local := local_toolchain_path / sparc_name
+# Set env variable for architecture [arch]
+arch_env arch:
+  just _arch_env \
+    {{local_toolchain_path}}/${{arch}}_name{{postfix}} \
+    ${{arch}}_arch_name ${{arch}}_cross_compile
 
-sparc:
-  just _arch_get {{sparc_glib_url}} {{sparc_glib_local}}
-sparc_clean:
-  just _arch_clean {{sparc_glib_local}}
-sparc_env:
-  just _arch_env {{ sparc_glib_local }} sparc "sparc64-linux-"
+# List available architectures
+arch_list:
+  for arch in ${ALL_ARCH}; do \
+    echo $arch; \
+  done
 
-s390_name := "s390x-z13--glibc--stable-2024.05-1"
-s390_glib_url := bootlin_url / "s390x-z13/tarballs" / s390_name + ".tar.xz"
-s390_glib_local := local_toolchain_path / s390_name
+# Download all architectures
+arch_wget_all:
+  for arch in ${ALL_ARCH}; do \
+    just arch_wget $arch; \
+  done
 
-s390:
-  just _arch_get {{s390_glib_url}} {{s390_glib_local}}
-s390_clean:
-  just _arch_clean {{s390_glib_local}}
-s390_env:
-  just _arch_env {{ s390_glib_local }} s390 "s390x-linux-"
-
-download_all: sparc x86_32 s390
-clean_all: sparc_clean x86_32_clean s390_clean
+# Clean all the architectures
+arch_clean_all:
+  for arch in ${ALL_ARCH}; do \
+    just arch_clean $arch; \
+  done
 
