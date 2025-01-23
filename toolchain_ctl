@@ -1,3 +1,5 @@
+#!/usr/bin/env -S just --justfile
+
 set dotenv-load
 set dotenv-required
 
@@ -47,14 +49,13 @@ arch_list:
   done
 
 # Download all architectures
-arch_wget_all:
+wget_all:
   for arch in ${ALL_ARCH}; do \
     just arch_wget $arch; \
   done
 
 # Clean all the architectures
-arch_clean_all:
+clean_all:
   for arch in ${ALL_ARCH}; do \
     just arch_clean $arch; \
   done
-
