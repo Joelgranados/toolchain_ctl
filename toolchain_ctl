@@ -11,6 +11,9 @@ date := "2024.05-1"
 postfix := "--" + lib + "--" + release + "-" + date
 justfile := "toolchain_ctl"
 
+help:
+  just --justfile {{justfile}} --list
+
 _download url:
   wget --no-clobber -P {{local_toolchain_path}} {{url}}
 _unzip file:
