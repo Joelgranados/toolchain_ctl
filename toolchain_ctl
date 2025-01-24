@@ -4,13 +4,14 @@ set dotenv-load
 set dotenv-required
 
 bootlin_url := "https://toolchains.bootlin.com/downloads/releases/toolchains"
-local_toolchain_path := `pwd`
+local_toolchain_path := "~/.cache/toolchain_ctl"
 lib := "glibc"
 release := "stable"
 date := "2024.05-1"
 postfix := "--" + lib + "--" + release + "-" + date
 justfile := "toolchain_ctl"
 
+# Run the --list argument. Defaults with no args
 help:
   just --justfile {{justfile}} --list
 
