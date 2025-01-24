@@ -1,5 +1,5 @@
 {
-  description = "";
+  description = "Download/Setup toolchains from bootlin";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
@@ -15,15 +15,12 @@
       pname = "toolchain_ctl";
       version = "0.0.1";
       src = ./.;
+      dontPatchShebangs = true;
       installPhase = ''
         mkdir -p $out/bin
         cp toolchain_ctl $out/bin/toolchain_ctl
         chmod +x $out/bin/toolchain_ctl
       '';
-
-      meta = {
-        description = "Download/Setup toolchains from bootlin";
-      };
     };
   };
 }
