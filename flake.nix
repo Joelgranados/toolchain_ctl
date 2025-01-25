@@ -19,6 +19,7 @@
       installPhase = ''
         mkdir -p $out/bin
         cp toolchain_ctl $out/bin/toolchain_ctl
+        cp .env $out/bin/.env
         chmod +x $out/bin/toolchain_ctl
       '';
     };
