@@ -34,6 +34,11 @@ _arch_clean dir:
 _arch_env tool_path arch cross_compile:
     PATH="{{ tool_path }}/bin:$PATH" ARCH={{ arch }} CROSS_COMPILE={{ cross_compile }} zsh
 
+_arch_export tool_path arch cross_compile:
+    @echo "export PATH=\"{{ tool_path }}/bin:$PATH\""
+    @echo "export ARCH={{ arch }}"
+    @echo "export CROSS_COMPILE={{ cross_compile }}"
+
 # Download architecture [arch]
 arch_wget arch:
     just --justfile {{ justfile }} _arch_get \
@@ -45,9 +50,15 @@ arch_clean arch:
     just --justfile {{ justfile }} _arch_clean \
         {{ local_toolchain_path }}/${{ arch }}_name{{ postfix }}
 
-# Set env variable for architecture [arch]
+# Set env variable for arch [arch] in a new zsh
 arch_env arch:
     just --justfile {{ justfile }} _arch_env \
+        {{ local_toolchain_path }}/${{ arch }}_name{{ postfix }} \
+        ${{ arch }}_arch_name ${{ arch }}_cross_compile
+
+# Echo "export" commands for env variables for arch [arch]
+arch_export arch:
+    @just --justfile {{ justfile }} _arch_export \
         {{ local_toolchain_path }}/${{ arch }}_name{{ postfix }} \
         ${{ arch }}_arch_name ${{ arch }}_cross_compile
 
